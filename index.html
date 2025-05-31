@@ -55,16 +55,19 @@
             body.setAttribute('data-theme', theme);
             if (theme === DARK_THEME) {
                 themeToggle.checked = true;
-                themeToggleLabel.textContent = 'Dark Mode';
+                themeToggleLabel.innerHTML = '<i class="fas fa-moon"></i>'; // Font Awesome moon icon
             } else {
                 themeToggle.checked = false;
-                themeToggleLabel.textContent = 'Light Mode';
+                themeToggleLabel.innerHTML = '<i class="fas fa-sun"></i>';  // Font Awesome sun icon
             }
         }
 
         // Function to determine theme based on time (7 AM to 7 PM is light)
         function getAutoTheme() {
             const currentHour = new Date().getHours();
+            // Current time is 10:41 AM EDT on Saturday, May 31, 2025.
+            // For testing, you might want to adjust these hours or temporarily set currentHour.
+            // Example: if currentHour is 10, it's between 7 and 19, so light theme.
             if (currentHour >= 7 && currentHour < 19) { // 7 AM to 6:59 PM
                 return LIGHT_THEME;
             }
@@ -91,9 +94,6 @@
         });
 
         // Check theme periodically for automatic switching if no manual preference is set
-        // This interval is optional and can be adjusted or removed.
-        // It's mainly useful if the user keeps the page open across a sunrise/sunset boundary
-        // without having made a manual selection.
         setInterval(() => {
             const storedTheme = localStorage.getItem('themePreference');
             if (!storedTheme) { // Only auto-switch if no manual preference is set
