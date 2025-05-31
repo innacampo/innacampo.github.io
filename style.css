@@ -6,12 +6,12 @@
     --bg-color: #d2d6db;
     --text-color: #56454c;
     --heading-color: #2c2326;
-    --icon-color: #2c2326; /* For terminal icon etc. */
+    --icon-color: #2c2326;
     --link-color: #7A7C80;
     --link-hover-color: #2c2326;
     --switch-bg: #ccc;
     --switch-slider-color: white;
-    --switch-label-color: #2c2326;
+    --switch-icon-color: #2c2326; /* Color for sun/moon icons in switcher */
 }
 
 body[data-theme="dark"] {
@@ -21,9 +21,9 @@ body[data-theme="dark"] {
     --icon-color: #F0F0F0;
     --link-color: #007BFF;
     --link-hover-color: #8A2BE2;
-    --switch-bg: #575757; /* Darker background for the switch */
-    --switch-slider-color: #ccc; /* Lighter slider for dark mode */
-    --switch-label-color: #F0F0F0;
+    --switch-bg: #575757;
+    --switch-slider-color: #ccc;
+    --switch-icon-color: #F0F0F0; /* Color for sun/moon icons in switcher */
 }
 
 .grid-2{
@@ -40,7 +40,7 @@ body{
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-h2, .white { /* .white is used for the terminal icon */
+h2, .white {
     color: var(--heading-color);
 }
 
@@ -80,11 +80,19 @@ a{
     align-items: center;
 }
 
+.theme-icon { /* New style for sun/moon icons */
+    color: var(--switch-icon-color);
+    font-size: 1.2rem; /* Adjust size as needed */
+    margin: 0 10px; /* Space around the toggle switch */
+    line-height: 1; /* Ensures icon aligns well if it has extra space */
+}
+
 .toggle-switch {
     position: relative;
     display: inline-block;
-    width: 50px; /* Smaller width */
-    height: 24px; /* Smaller height */
+    width: 50px;
+    height: 24px;
+    flex-shrink: 0; /* Prevent switch from shrinking if space is tight */
 }
 
 .toggle-switch input {
@@ -107,16 +115,16 @@ a{
 .slider:before {
     position: absolute;
     content: "";
-    height: 18px; /* Smaller slider circle */
-    width: 18px;  /* Smaller slider circle */
-    left: 3px;    /* Adjusted position */
-    bottom: 3px;  /* Adjusted position */
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
     background-color: var(--switch-slider-color);
     transition: .4s;
 }
 
 input:checked + .slider {
-    background-color: var(--link-color); /* Use link color for active state for visibility */
+    background-color: var(--link-color);
 }
 
 input:focus + .slider {
@@ -124,22 +132,24 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-    transform: translateX(26px); /* Adjusted translation */
+    transform: translateX(26px);
 }
 
 .slider.round {
-    border-radius: 24px; /* Adjusted for new height */
+    border-radius: 24px;
 }
 
 .slider.round:before {
     border-radius: 50%;
 }
 
+/* Remove or comment out the old #themeToggleLabel style if it exists */
+/*
 #themeToggleLabel {
     color: var(--switch-label-color);
     font-size: 0.9rem;
 }
-
+*/
 
 /* section 2 */
 .section-2{
@@ -162,7 +172,7 @@ input:checked + .slider:before {
     padding: 5px;
     font-size: 1.2rem;
     padding-left: 0;
-    width: auto; /* Changed from 100px to auto for better flexibility */
+    width: auto;
 }
 
 /* animations / utilities */
@@ -170,7 +180,7 @@ input:checked + .slider:before {
     font-size: 1.3rem;
     color: var(--link-hover-color);
     cursor: pointer;
-    transition: color 0.2s ease, font-size 0.2s ease; /* Combined transitions */
+    transition: color 0.2s ease, font-size 0.2s ease;
 }
 
 .section-1 a:hover{
@@ -179,14 +189,13 @@ input:checked + .slider:before {
     transition: color 0.3s ease;
 }
 
-.white.fa-terminal { /* Be more specific for the icon if .white is too general */
-    color: var(--icon-color); /* Ensure icon uses theme color */
+.white.fa-terminal {
+    color: var(--icon-color);
 }
 
 .white:hover{
     position: relative;
     padding-left: 10px;
-    /* color: var(--link-hover-color); /* Example: make icon change color on hover */
 }
 
 /* media queries */
@@ -204,6 +213,6 @@ input:checked + .slider:before {
         padding-top: 2rem;
     }
     .section-2 a {
-        width: 100%; /* Ensure links are full width on small screens if desired */
+        width: 100%;
     }
 }
