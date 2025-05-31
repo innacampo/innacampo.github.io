@@ -1,6 +1,31 @@
 /* global */
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
+:root {
+    /* Light Theme (default) */
+    --bg-color: #d2d6db;
+    --text-color: #56454c;
+    --heading-color: #2c2326;
+    --icon-color: #2c2326; /* For terminal icon etc. */
+    --link-color: #7A7C80;
+    --link-hover-color: #2c2326;
+    --switch-bg: #ccc;
+    --switch-slider-color: white;
+    --switch-label-color: #2c2326;
+}
+
+body[data-theme="dark"] {
+    --bg-color: #1A1A2E;
+    --text-color: #F0F0F0;
+    --heading-color: #F0F0F0;
+    --icon-color: #F0F0F0;
+    --link-color: #007BFF;
+    --link-hover-color: #8A2BE2;
+    --switch-bg: #575757; /* Darker background for the switch */
+    --switch-slider-color: #ccc; /* Lighter slider for dark mode */
+    --switch-label-color: #F0F0F0;
+}
+
 .grid-2{
     display: grid;
     grid-template-columns: repeat(2,1fr);
@@ -10,17 +35,19 @@ body{
     margin: 0;
     padding: 0;
     font-family: 'Roboto', sans-serif;
-    background-color: #1A1A2E; /* Dark Mode: Deep charcoal/navy background */
-    color: #F0F0F0; /* Dark Mode: Off-white text */
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-h2, .white { /* .white is used for the terminal icon and potentially other elements */
-    color: #F0F0F0; /* Dark Mode: Off-white for headings and elements with .white class */
+h2, .white { /* .white is used for the terminal icon */
+    color: var(--heading-color);
 }
 
 a{
-    color: #007BFF; /* Dark Mode: Electric blue for links */
+    color: var(--link-color);
     text-decoration: none;
+    transition: color 0.3s ease;
 }
 
 /* section 1 */
@@ -33,20 +60,86 @@ a{
     font-size: 1.1rem;
     padding-bottom: 10px;
     margin:0;
-    /* Text color will be inherited from body (#F0F0F0) */
 }
 
 .section-1 h2{
     font-size: 1.7rem;
     margin-bottom: 10px;
-    /* Heading color will be inherited from h2 rule (#F0F0F0) */
 }
 
 .section-1 a{
     font-size: 1.5rem;
     padding: 10px;
-    /* Link color will be inherited from general 'a' rule (#007BFF) */
 }
+
+/* Theme Switcher Styles */
+.theme-switcher-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px; /* Smaller width */
+    height: 24px; /* Smaller height */
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--switch-bg);
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px; /* Smaller slider circle */
+    width: 18px;  /* Smaller slider circle */
+    left: 3px;    /* Adjusted position */
+    bottom: 3px;  /* Adjusted position */
+    background-color: var(--switch-slider-color);
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: var(--link-color); /* Use link color for active state for visibility */
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px var(--link-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px); /* Adjusted translation */
+}
+
+.slider.round {
+    border-radius: 24px; /* Adjusted for new height */
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+#themeToggleLabel {
+    color: var(--switch-label-color);
+    font-size: 0.9rem;
+}
+
 
 /* section 2 */
 .section-2{
@@ -57,44 +150,43 @@ a{
 .section-2 h2{
     font-size: 1.7rem;
     margin-bottom: 10px;
-    /* Heading color will be inherited from h2 rule (#F0F0F0) */
 }
 
 .section-2 p{
     font-size: 1.1rem;
     padding-bottom: 10px;
     margin:0;
-    /* Text color will be inherited from body (#F0F0F0) */
 }
 
 .section-2 a{
-    /* display: block; */ /* This was commented out in your original file */
     padding: 5px;
     font-size: 1.2rem;
     padding-left: 0;
-    width: 100px; /* Note: This width might be restrictive for some link texts */
-    /* Link color will be inherited from general 'a' rule (#007BFF) */
+    width: auto; /* Changed from 100px to auto for better flexibility */
 }
 
 /* animations / utilities */
 .section-2 a:hover{
-    font-size: 1.3rem; /* Keeps the size increase on hover */
-    color: #8A2BE2; /* Dark Mode: Vibrant purple for link hover */
+    font-size: 1.3rem;
+    color: var(--link-hover-color);
     cursor: pointer;
-    transition: 0.2s;
+    transition: color 0.2s ease, font-size 0.2s ease; /* Combined transitions */
 }
 
 .section-1 a:hover{
-    color: #8A2BE2; /* Dark Mode: Vibrant purple for link hover */
+    color: var(--link-hover-color);
     cursor: pointer;
-    transition: 0.3s;
+    transition: color 0.3s ease;
 }
 
-.white:hover{ /* This rule is for the terminal icon (or any element with .white class) */
+.white.fa-terminal { /* Be more specific for the icon if .white is too general */
+    color: var(--icon-color); /* Ensure icon uses theme color */
+}
+
+.white:hover{
     position: relative;
-    padding-left: 10px; /* Keeps the slight move effect */
-    /* If you want the icon to change color on hover, you can add: */
-    /* color: #8A2BE2; */ /* Example: make icon vibrant purple on hover */
+    padding-left: 10px;
+    /* color: var(--link-hover-color); /* Example: make icon change color on hover */
 }
 
 /* media queries */
@@ -110,5 +202,8 @@ a{
         padding: 0;
         padding-left: 1.5rem;
         padding-top: 2rem;
+    }
+    .section-2 a {
+        width: 100%; /* Ensure links are full width on small screens if desired */
     }
 }
