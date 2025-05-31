@@ -21,7 +21,7 @@
                     <input type="checkbox" id="themeToggleCheckbox">
                     <span class="slider round"></span>
                 </label>
-                <span id="themeToggleLabel" style="margin-left: 8px; vertical-align: middle;">Dark Mode</span>
+                <span id="themeToggleLabel" style="margin-left: 8px; vertical-align: middle;"></span>
             </div>
             </div>
         <div class="section-2">
@@ -42,5 +42,70 @@
             
         </div>
     </div>
+<script>
+        const themeToggle = document.getElementById('themeToggleCheckbox');
+        const themeToggleLabel = document.getElementById('themeToggleLabel');
+        const body = document.body;
+
+        const LIGHT_THEME = 'light';
+        const DARK_THEME = 'dark';
+
+        // Function to apply theme
+        function applyTheme(theme) {
+            body.setAttribute('data-theme', theme);
+            if (theme === DARK_THEME) {
+                themeToggle.checked = true;
+                themeToggleLabel.textContent = 'Dark Mode';
+            } else {
+                themeToggle.checked = false;
+                themeToggleLabel.textContent = 'Light Mode';
+            }
+        }
+
+        // Function to determine theme based on time (7 AM to 7 PM is light)
+        function getAutoTheme() {
+            const currentHour = new Date().getHours();
+            if (currentHour >= 7 && currentHour < 19) { // 7 AM to 6:59 PM
+                return LIGHT_THEME;
+            }
+            return DARK_THEME;
+        }
+
+        // Initialize theme
+        function initializeTheme() {
+            const storedTheme = localStorage.getItem('themePreference');
+            if (storedTheme) {
+                // User has a saved preference
+                applyTheme(storedTheme);
+            } else {
+                // No saved preference, use automatic time-based theme
+                applyTheme(getAutoTheme());
+            }
+        }
+
+        // Event listener for the toggle
+        themeToggle.addEventListener('change', () => {
+            const newTheme = themeToggle.checked ? DARK_THEME : LIGHT_THEME;
+            applyTheme(newTheme);
+            localStorage.setItem('themePreference', newTheme); // Save user's manual choice
+        });
+
+        // Check theme periodically for automatic switching if no manual preference is set
+        // This interval is optional and can be adjusted or removed.
+        // It's mainly useful if the user keeps the page open across a sunrise/sunset boundary
+        // without having made a manual selection.
+        setInterval(() => {
+            const storedTheme = localStorage.getItem('themePreference');
+            if (!storedTheme) { // Only auto-switch if no manual preference is set
+                const autoTheme = getAutoTheme();
+                if (body.getAttribute('data-theme') !== autoTheme) {
+                    applyTheme(autoTheme);
+                }
+            }
+        }, 60 * 1000); // Check every minute
+
+        // Initial theme setup
+        initializeTheme();
+    </script>
 </body>
 </html>
