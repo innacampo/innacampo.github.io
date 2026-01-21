@@ -1,106 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
-    <title>Inna Campo</title>
+  <link rel="icon" href="/favicon.ico">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inna Campo, PhD </title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            slate: {
+              800: '#1e293b',
+              900: '#0f172a',
+              950: '#020617',
+            },
+            emerald: {
+              400: '#34d399',
+              600: '#059669',
+              700: '#047857',
+            },
+            amber: {
+              500: '#f59e0b',
+            }
+          },
+          animation: {
+            'spin-slow': 'spin 3s linear infinite',
+            'fade-in': 'fadeIn 0.8s ease-out forwards',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    /* Custom scrollbar for a cleaner scientific look */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    .dark ::-webkit-scrollbar-thumb {
+      background-color: #334155;
+    }
+
+    .animate-fade-in,
+    .animate-spin-slow {
+      will-change: transform, opacity;
+    }
+  </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.35.0",
+    "marked": "https://esm.sh/marked@12.0.0"
+  }
+}
+</script>
 </head>
-<body>
-    <div class="grid-2">
-        <div class="section-1">
-            <i class="fas fa-braille fa-5x white"></i>
-            <h2>Inna Campo</h2>
-            <p>Atlanta GA</p>
-            <a href="https://www.linkedin.com/in/innacampo" target="_blank"><i class="fab fa-linkedin"></i></a>
-            <a href="https://github.com/innacampo" target="_blank"><i class="fab fa-github"></i></a>
-            <div class="theme-switcher-container">
-                <span class="theme-icon sun-icon"><i class="fas fa-sun"></i></span>
-                 &nbsp;&nbsp; <label class="toggle-switch">
-                    <input type="checkbox" id="themeToggleCheckbox">
-                    <span class="slider round"></span>
-                </label>
-                 &nbsp;&nbsp; <span class="theme-icon moon-icon"><i class="fas fa-moon"></i></span>
-            </div>
-            </div>
-        <div class="section-2">
-            <h2>About</h2>
-            <p>Ph.D. in Computer Science and M.S. in Bioinformatics, with expertise in computational biology, high-performance computing, and bioinformatics pipeline development. Proficient in advance scalable computational solutions for genomic research, infectious disease surveillance, and large-scale biological data processing.</p>
-            <a href="Resume/resume.pdf" target="_blank">Resume</a>
-            <p></p>
-            <h2>Skills</h2>
-            <p></p>
-            <h2>AI/ML</h2>
-            <a href="#" target="_blank">AURA - Autoimmune Understanding & Research Assistant AI Agent</a> <p></p>
-            <a href="https://github.com/innacampo/adhd_classification" target="_blank">Predictive Modeling for ADHD Detection</a> <p></p>
-            <a href="https://vimeo.com/165084541" target="_blank">Predictive Weather Alerts</a> <p></p>
-            <a href="https://rex.libraries.wsu.edu/esploro/outputs/doctoral/PARALLEL-ALGORITHMS-FOR-LARGE-SCALE-GRAPH-CLUSTERING/99900581643601842" target="_blank">Parallel Algorithms for Large-Scale Graph Clustering on Distributed Memory Architectures</a><p></p> 
-            <a href="https://www.cdc.gov/hepatitis/php/health-care-outbreak-toolkit/hcv-molecular-epidemiology.html" target="_blank">GHOST: Global Hepatitis Outbreak and Surveillance Technology</a><p></p>
-            <h2>Contact</h2>
-            <p>inna.campo@gmail.com</p>
-            
-        </div>
-    </div>
-<script>
-        const themeToggle = document.getElementById('themeToggleCheckbox');
-        // const themeToggleLabel = document.getElementById('themeToggleLabel'); // This line is no longer needed
-        const body = document.body;
 
-        const LIGHT_THEME = 'light';
-        const DARK_THEME = 'dark';
-
-        // Function to apply theme
-        function applyTheme(theme) {
-            body.setAttribute('data-theme', theme);
-            if (theme === DARK_THEME) {
-                themeToggle.checked = true;
-            } else {
-                themeToggle.checked = false;
-            }
-            // No need to update a label's textContent or innerHTML here
-        }
-
-        // Function to determine theme based on time (7 AM to 7 PM is light)
-        function getAutoTheme() {
-            const currentHour = new Date().getHours();
-            if (currentHour >= 7 && currentHour < 19) { // 7 AM to 6:59 PM
-                return LIGHT_THEME;
-            }
-            return DARK_THEME;
-        }
-
-        // Initialize theme
-        function initializeTheme() {
-            const storedTheme = localStorage.getItem('themePreference');
-            if (storedTheme) {
-                applyTheme(storedTheme);
-            } else {
-                applyTheme(getAutoTheme());
-            }
-        }
-
-        // Event listener for the toggle
-        themeToggle.addEventListener('change', () => {
-            const newTheme = themeToggle.checked ? DARK_THEME : LIGHT_THEME;
-            applyTheme(newTheme);
-            localStorage.setItem('themePreference', newTheme);
-        });
-
-        // Check theme periodically for automatic switching if no manual preference is set
-        setInterval(() => {
-            const storedTheme = localStorage.getItem('themePreference');
-            if (!storedTheme) {
-                const autoTheme = getAutoTheme();
-                if (body.getAttribute('data-theme') !== autoTheme) {
-                    applyTheme(autoTheme);
-                }
-            }
-        }, 60 * 1000);
-
-        // Initial theme setup
-        initializeTheme();
-    </script>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200 transition-colors duration-300">
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
 </body>
+
 </html>
