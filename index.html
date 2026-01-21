@@ -2,14 +2,22 @@
 <html lang="en">
 
 <head>
-  <link rel="icon" href="/favicon.ico">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inna Campo, PhD </title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inna Campo, PhD | Bioinformatics AI Scientist</title>
+  <link rel="icon" href="favicon.ico">
+
+  <!-- Scripts -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap"
+    rel="stylesheet">
+
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -17,6 +25,7 @@
         extend: {
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
+            roboto: ['Roboto', 'sans-serif'],
           },
           colors: {
             slate: {
@@ -47,6 +56,7 @@
       },
     }
   </script>
+
   <style>
     /* Custom scrollbar for a cleaner scientific look */
     ::-webkit-scrollbar {
@@ -66,28 +76,357 @@
       background-color: #334155;
     }
 
-    .animate-fade-in,
-    .animate-spin-slow {
-      will-change: transform, opacity;
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.8s ease-out;
+    }
+
+    .scroll-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* DNA Loader Styles */
+    #dna-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: inherit;
+      transition: opacity 0.5s ease;
+    }
+
+    @keyframes helixMove {
+
+      0%,
+      100% {
+        transform: translateX(-16px) scale(0.8);
+        z-index: 0;
+      }
+
+      50% {
+        transform: translateX(16px) scale(1.2);
+        z-index: 20;
+      }
+    }
+
+    @keyframes helixMoveInverse {
+
+      0%,
+      100% {
+        transform: translateX(16px) scale(1.2);
+        z-index: 20;
+      }
+
+      50% {
+        transform: translateX(-16px) scale(0.8);
+        z-index: 0;
+      }
+    }
+
+    @keyframes lineStretch {
+
+      0%,
+      50%,
+      100% {
+        transform: scaleX(1);
+        opacity: 0.3;
+      }
+
+      25%,
+      75% {
+        transform: scaleX(0.1);
+        opacity: 0.05;
+      }
+    }
+
+    .dot-l {
+      animation: helixMove 2s ease-in-out infinite;
+    }
+
+    .dot-r {
+      animation: helixMoveInverse 2s ease-in-out infinite;
+    }
+
+    .base-pair {
+      animation: lineStretch 2s ease-in-out infinite;
+    }
+
+    /* Status Typewriter */
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 1.2em;
+      background-color: currentColor;
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+
+    /* Organic Background */
+    #organic-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0.4;
     }
   </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-    "@google/genai": "https://esm.sh/@google/genai@^1.35.0",
-    "marked": "https://esm.sh/marked@12.0.0"
-  }
-}
-</script>
 </head>
 
-<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200 transition-colors duration-300">
-  <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200 transition-colors duration-300 font-sans">
+
+  <!-- DNA Loader -->
+  <div id="dna-loader" class="bg-slate-50 dark:bg-slate-950">
+    <div class="relative flex items-center justify-center h-64 w-24" id="dna-container">
+      <!-- Base pairs and dots will be generated via JS -->
+    </div>
+    <div class="mt-12 text-slate-500 dark:text-slate-400 font-mono text-xs tracking-[0.3em] animate-pulse">
+      LOADING...
+    </div>
+  </div>
+
+  <!-- Organic Background (Simplified SVG version of OrganicBackground.tsx) -->
+  <div id="organic-bg">
+    <svg width="100%" height="100%" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="blurFilter">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="50" />
+        </filter>
+      </defs>
+      <circle cx="10%" cy="10%" r="300" fill="rgba(16, 185, 129, 0.05)" filter="url(#blurFilter)">
+        <animate attributeName="cx" values="10%;15%;10%" dur="20s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="90%" cy="90%" r="400" fill="rgba(94, 114, 228, 0.05)" filter="url(#blurFilter)">
+        <animate attributeName="cy" values="90%;85%;90%" dur="25s" repeatCount="indefinite" />
+      </circle>
+    </svg>
+  </div>
+
+  <!-- Theme Toggle -->
+  <button id="theme-toggle"
+    class="fixed top-6 right-6 z-50 p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-lg hover:scale-110 transition-all duration-300"
+    aria-label="Toggle Theme">
+    <i data-lucide="sun" class="w-5 h-5 text-amber-500 hidden dark:block"></i>
+    <i data-lucide="moon" class="w-5 h-5 text-slate-700 block dark:hidden"></i>
+  </button>
+
+  <!-- Main Layout -->
+  <div id="app-content"
+    class="min-h-screen flex flex-col md:flex-row transition-opacity duration-1000 opacity-0 pointer-events-none">
+
+    <!-- Sidebar -->
+    <aside
+      class="relative w-full md:w-[35%] lg:w-[30%] md:h-screen md:sticky md:top-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-b md:border-b-0 md:border-r border-slate-200/50 dark:border-slate-800/50 flex flex-col justify-center transition-colors duration-300 z-20">
+      <!-- Particle Canvas -->
+      <canvas id="particle-canvas" class="absolute inset-0 z-0"></canvas>
+
+      <div class="relative z-10 p-8 lg:p-12 flex flex-col h-full justify-between pointer-events-none">
+        <div class="space-y-6 pointer-events-auto">
+          <div class="inline-block p-1 rounded-full bg-gradient-to-br from-emerald-600 to-slate-400">
+            <div
+              class="w-40 h-40 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
+              <img id="profile-img" src="profile.jpg" alt="Profile"
+                class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+            </div>
+          </div>
+
+          <div>
+            <h1 id="profile-name"
+              class="text-2xl lg:text-3xl font-bold tracking-tight text-slate-800 dark:text-white mb-2"></h1>
+            <p id="profile-role" class="text-emerald-700 dark:text-emerald-400 font-medium text-lg"></p>
+          </div>
+
+          <!-- Typewriter Status -->
+          <div id="status-typewriter"
+            class="h-12 flex items-center gap-2 font-mono text-sm text-slate-600 dark:text-slate-400 italic">
+            <i data-lucide="terminal" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+            <span id="typed-text"></span><span class="cursor"></span>
+          </div>
+
+          <div id="badges-container" class="flex flex-wrap gap-2 pt-2">
+            <!-- Badges will be generated here -->
+          </div>
+        </div>
+
+        <!-- Connect Links -->
+        <div class="mt-16 md:mt-12 space-y-4 pointer-events-auto">
+          <h3 class="text-xs uppercase tracking-widest text-slate-500 dark:text-slate-500 font-bold">Connect</h3>
+          <div class="flex justify-center gap-2 px-2">
+            <a href="#contact"
+              class="p-1.5 text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all"
+              aria-label="Get in Touch">
+              <i data-lucide="mail" class="w-5 h-5"></i>
+            </a>
+            <a href="CV_InnaCampo.pdf" target="_blank"
+              class="p-1.5 text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all"
+              aria-label="Resume / CV">
+              <i data-lucide="file-text" class="w-5 h-5"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/innacampo/" target="_blank"
+              class="p-1.5 text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all"
+              aria-label="LinkedIn">
+              <i data-lucide="linkedin" class="w-5 h-5"></i>
+            </a>
+            <a href="https://scholar.google.com/citations?user=mIayChgAAAAJ&hl=en&oi=ao" target="_blank"
+              class="p-1.5 text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all"
+              aria-label="Google Scholar">
+              <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+            </a>
+            <a href="https://github.com/innacampo" target="_blank"
+              class="p-1.5 text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all"
+              aria-label="GitHub">
+              <i data-lucide="github" class="w-5 h-5"></i>
+            </a>
+            <a href="https://harmonilab.org/" target="_blank"
+              class="p-1.5 text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all"
+              aria-label="HARMONI Lab">
+              <i data-lucide="globe" class="w-5 h-5"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Content Area -->
+    <main class="w-full md:w-[65%] lg:w-[70%] min-h-screen bg-transparent relative z-10">
+      <div class="max-w-4xl mx-auto px-6 py-12 lg:py-20">
+
+        <!-- Projects -->
+        <section class="scroll-reveal mb-20">
+          <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-3">
+              <i data-lucide="sparkles" class="text-emerald-700 dark:text-emerald-400 w-6 h-6"></i>
+              <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Featured Initiative</h2>
+            </div>
+          </div>
+          <div id="projects-grid" class="grid gap-6">
+            <!-- Projects mapped here -->
+          </div>
+        </section>
+
+        <!-- Experience -->
+        <section class="scroll-reveal mb-20">
+          <div class="flex items-center gap-3 mb-10">
+            <i data-lucide="briefcase" class="text-emerald-700 dark:text-emerald-400 w-6 h-6"></i>
+            <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Experience</h2>
+          </div>
+          <div id="timeline-container" class="space-y-12">
+            <!-- Experience mapped here -->
+          </div>
+        </section>
+
+        <!-- Patents -->
+        <section class="scroll-reveal mb-20">
+          <div class="flex items-center gap-3 mb-8">
+            <i data-lucide="lightbulb" class="text-emerald-700 dark:text-emerald-400 w-6 h-6"></i>
+            <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Patents</h2>
+          </div>
+          <div id="patents-grid" class="grid gap-4">
+            <!-- Patents mapped here -->
+          </div>
+        </section>
+
+        <!-- Publications -->
+        <section class="scroll-reveal mb-20">
+          <div class="flex items-center gap-3 mb-8">
+            <i data-lucide="book-open" class="text-emerald-700 dark:text-emerald-400 w-6 h-6"></i>
+            <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Select Publications</h2>
+          </div>
+          <div id="publications-list" class="space-y-6">
+            <!-- Publications mapped here -->
+          </div>
+        </section>
+
+        <!-- Academic Citizenship -->
+        <section class="scroll-reveal mb-20">
+          <div class="flex items-center gap-3 mb-8">
+            <i data-lucide="users" class="text-emerald-700 dark:text-emerald-400 w-6 h-6"></i>
+            <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Academic Citizenship</h2>
+          </div>
+          <div class="space-y-8" id="academic-citizenship">
+            <!-- Academic Citizenship content mapped here -->
+          </div>
+        </section>
+
+        <!-- Awards -->
+        <section class="scroll-reveal mb-20">
+          <div class="flex items-center gap-3 mb-8">
+            <i data-lucide="award" class="text-emerald-700 dark:text-emerald-400 w-6 h-6"></i>
+            <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Honors & Awards</h2>
+          </div>
+          <div
+            class="bg-gradient-to-br from-emerald-50 to-slate-50 dark:from-emerald-900/10 dark:to-slate-900/50 p-6 rounded-xl border border-emerald-100 dark:border-emerald-900/30">
+            <ul id="awards-list" class="space-y-3">
+              <!-- Awards mapped here -->
+            </ul>
+          </div>
+        </section>
+
+        <!-- Contact -->
+        <section id="contact" class="scroll-reveal mt-20">
+          <div
+            class="bg-white dark:bg-slate-900 rounded-3xl p-8 lg:p-12 border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+              <i data-lucide="send" class="w-32 h-32"></i>
+            </div>
+            <div class="relative z-10 max-w-2xl">
+              <h2 class="text-3xl font-bold text-slate-800 dark:text-white mb-4">Let's Collaborate</h2>
+              <p class="text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+                Interested in the intersection of Agentic AI, Neuroendocrine Health, or High-Performance Computing? I'm
+                always open to discussing new initiatives and research opportunities.
+              </p>
+
+              <form id="contact-form" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input type="text" name="name" placeholder="Name" required
+                    class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none text-slate-800 dark:text-white">
+                  <input type="email" name="email" placeholder="Email" required
+                    class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none text-slate-800 dark:text-white">
+                </div>
+                <input type="text" name="subject" placeholder="Subject" required
+                  class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none text-slate-800 dark:text-white">
+                <textarea name="message" placeholder="Message" rows="4" required
+                  class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all outline-none text-slate-800 dark:text-white resize-none"></textarea>
+                <button type="submit"
+                  class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg hover:shadow-emerald-500/20 active:scale-[0.98] flex items-center justify-center gap-2">
+                  <i data-lucide="send" class="w-4 h-4"></i>
+                  Send Message
+                </button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <footer class="mt-24 pt-8 border-t border-slate-200/60 dark:border-slate-800/60 text-center">
+          <p class="text-sm text-slate-400 dark:text-slate-600 font-mono">
+            &copy; 2026. Designed by Inna Campo
+          </p>
+        </footer>
+      </div>
+    </main>
+  </div>
+
+  <!-- Data and Main Logic -->
+  <script src="data.js"></script>
+  <script src="main.js"></script>
 </body>
 
 </html>
