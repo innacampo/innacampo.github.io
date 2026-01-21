@@ -26,8 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAcademicCitizenship(data.ACADEMIC_CITIZENSHIP);
     renderAwards(data.AWARDS);
 
-    // 6. Typewriter Status
-    initTypewriter();
 
     // 7. Particle Background
     initParticles();
@@ -307,44 +305,6 @@ function renderAwards(awards) {
     });
 }
 
-function initTypewriter() {
-    const statusLines = [
-        "Initializing Agentic AI Pipelines...",
-        "Querying Women's Health Knowledge Graphs...",
-        "Optimizing Parallel Bio-Clustering Algorithms...",
-        "Evaluating RAG Safety Metrics...",
-        "Status: Online & Ready to Innovate."
-    ];
-    let lineIdx = 0;
-    let charIdx = 0;
-    let isDeleting = false;
-    const typedTextSpan = document.getElementById('typed-text');
-
-    function type() {
-        const currentLine = statusLines[lineIdx];
-        if (isDeleting) {
-            typedTextSpan.textContent = currentLine.substring(0, charIdx - 1);
-            charIdx--;
-        } else {
-            typedTextSpan.textContent = currentLine.substring(0, charIdx + 1);
-            charIdx++;
-        }
-
-        let typeSpeed = isDeleting ? 30 : 50;
-
-        if (!isDeleting && charIdx === currentLine.length) {
-            typeSpeed = 2000;
-            isDeleting = true;
-        } else if (isDeleting && charIdx === 0) {
-            isDeleting = false;
-            lineIdx = (lineIdx + 1) % statusLines.length;
-            typeSpeed = 500;
-        }
-
-        setTimeout(type, typeSpeed);
-    }
-    type();
-}
 
 function initParticles() {
     const canvas = document.getElementById('particle-canvas');
