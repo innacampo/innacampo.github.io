@@ -6,8 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = window.APP_DATA;
     if (!data) return;
 
-    // 1. Initialize Lucide Icons
-    lucide.createIcons();
 
     // 2. DNA Loader Initialization
     initDNALoader();
@@ -25,6 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
     renderPublications(data.PUBLICATIONS);
     renderAcademicCitizenship(data.ACADEMIC_CITIZENSHIP);
     renderAwards(data.AWARDS);
+
+    // 6. Initialize Lucide Icons for all dynamic content
+    lucide.createIcons({
+        attrs: {
+            'stroke-width': 2
+        },
+        nameAttr: 'data-lucide'
+    });
 
 
     // 7. Particle Background
@@ -47,6 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         setTimeout(() => {
             if (loader) loader.remove();
+            // Re-run icon initialization to ensure everything is caught
+            lucide.createIcons({
+                attrs: { 'stroke-width': 2 },
+                nameAttr: 'data-lucide'
+            });
         }, 500);
     }, 3000);
 });
@@ -126,12 +137,6 @@ function renderProfile(profile, badges) {
         span.innerHTML = `<i data-lucide="award" class="w-3 h-3 text-amber-500"></i>${badge.label}`;
         badgeContainer.appendChild(span);
     });
-    lucide.createIcons({
-        attrs: {
-            'stroke-width': 2
-        },
-        nameAttr: 'data-lucide'
-    });
 }
 
 function renderProjects(projects) {
@@ -141,8 +146,8 @@ function renderProjects(projects) {
         div.className = 'group relative bg-white dark:bg-slate-900 rounded-3xl p-6 lg:p-8 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/30 dark:hover:border-emerald-400/30 transition-all duration-500 shadow-sm hover:shadow-xl';
 
         div.innerHTML = `
-            <div class="flex flex-col md:flex-row justify-between gap-6">
-                <div class="space-y-4 flex-1">
+            <div class="flex flex-col gap-6">
+                <div class="space-y-4">
                     <div class="flex items-center gap-3">
                         <div class="p-2 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg text-emerald-600 dark:text-emerald-400">
                             <i data-lucide="zap" class="w-5 h-5"></i>
@@ -154,9 +159,18 @@ function renderProjects(projects) {
                         ${project.tags.map(tag => `<span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs font-mono rounded-lg">#${tag}</span>`).join('')}
                     </div>
                 </div>
-                <div class="flex flex-row md:flex-col gap-3 justify-start items-center md:items-end">
-                    ${project.link ? `<a href="${project.link}" target="_blank" class="p-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-600/20"><i data-lucide="external-link" class="w-5 h-5"></i></a>` : ''}
-                    ${project.github ? `<a href="${project.github}" target="_blank" class="p-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"><i data-lucide="github" class="w-5 h-5"></i></a>` : ''}
+                
+                <div class="flex items-center gap-6 pt-2">
+                    ${project.link ? `
+                        <a href="${project.link}" target="_blank" class="inline-flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm hover:underline decoration-2 underline-offset-4 transition-all">
+                            Learn more <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    ` : ''}
+                    ${project.github ? `
+                        <a href="${project.github}" target="_blank" class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors flex items-center gap-2 text-sm" title="View on GitHub">
+                            <i data-lucide="github" class="w-5 h-5"></i>
+                        </a>
+                    ` : ''}
                 </div>
             </div>
         `;
@@ -167,13 +181,16 @@ function renderProjects(projects) {
 function renderTimeline(experience) {
     const container = document.getElementById('timeline-container');
     experience.forEach((exp, idx) => {
+        console.log('Rendering exp:', exp.title, 'start_date:', exp.start_date, 'period:', exp.period, 'periods:', exp.periods);
         const div = document.createElement('div');
         div.className = 'relative pl-8 md:pl-0 group';
 
         let content = `
             <div class="flex flex-col md:flex-row gap-4 md:gap-12 relative">
                 <div class="md:w-32 pt-1">
-                    <span class="text-xs font-bold font-mono tracking-tighter text-slate-400 dark:text-slate-500 uppercase">${exp.start_date} – ${exp.end_date}</span>
+                    <span class="text-xs font-bold font-mono tracking-tighter text-slate-400 dark:text-slate-500 uppercase">
+                        ${exp.start_date ? `${exp.start_date} – ${exp.end_date}` : (exp.periods ? exp.periods.join(', ') : (exp.period || ''))}
+                    </span>
                 </div>
                 <div class="absolute left-[-25px] md:left-[138px] top-1.5 w-3 h-3 rounded-full border-2 border-emerald-500 bg-white dark:bg-slate-950 z-10 transition-transform group-hover:scale-125"></div>
                 ${idx < experience.length - 1 ? `<div class="absolute left-[-19.5px] md:left-[143.5px] top-6 bottom-[-48px] w-[1px] bg-slate-200 dark:bg-slate-800"></div>` : ''}
@@ -385,10 +402,81 @@ function initScrollReveal() {
 
 function initContactForm() {
     const form = document.getElementById('contact-form');
-    if (!form) return;
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        alert('Thank you for your message! This is a demo form.');
-        form.reset();
-    });
+    const resetBtn = document.getElementById('contact-reset-btn');
+    const formView = document.getElementById('contact-form-view');
+    const successView = document.getElementById('contact-success-view');
+    const submitBtn = document.getElementById('contact-submit-btn');
+    const btnText = document.getElementById('btn-text');
+    const btnIcon = document.getElementById('btn-icon');
+
+    if (!form || !formView || !successView) return;
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+
+        // Reset errors
+        document.querySelectorAll('[id^="error-"]').forEach(el => {
+            el.textContent = '';
+            el.classList.add('hidden');
+        });
+
+        // Toggle Submitting State
+        submitBtn.disabled = true;
+        btnText.textContent = "Sending...";
+        btnText.classList.add("animate-pulse", "font-mono");
+        btnIcon.classList.add("hidden");
+
+        const data = new FormData(event.target);
+
+        try {
+            const response = await fetch(event.target.action, {
+                method: form.method,
+                body: data,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                // Success State
+                formView.classList.add('hidden');
+                successView.classList.remove('hidden');
+                form.reset();
+            } else {
+                // Error State
+                const data = await response.json();
+                if (data.hasOwnProperty('errors')) {
+                    // Formspree validation errors
+                    data.errors.forEach(error => {
+                        const errorEl = document.getElementById(`error-${error.field}`);
+                        if (errorEl) {
+                            errorEl.textContent = error.message;
+                            errorEl.classList.remove('hidden');
+                        } else {
+                            // Fallback for general errors or unmapped fields
+                            alert(`Error: ${error.message}`);
+                        }
+                    });
+                } else {
+                    alert('Oops! There was a problem submitting your form');
+                }
+            }
+        } catch (error) {
+            alert('Oops! There was a problem submitting your form');
+        } finally {
+            // Reset Button State (if we are still looking at the form, likely error case)
+            submitBtn.disabled = false;
+            btnText.textContent = "Send";
+            btnText.classList.remove("animate-pulse", "font-mono");
+            btnIcon.classList.remove("hidden");
+        }
+    }
+
+    function handleReset() {
+        successView.classList.add('hidden');
+        formView.classList.remove('hidden');
+    }
+
+    form.addEventListener('submit', handleSubmit);
+    if (resetBtn) resetBtn.addEventListener('click', handleReset);
 }
